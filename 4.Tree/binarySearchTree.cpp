@@ -1,7 +1,8 @@
 // C++ Program to insert , remove binary search tree using linked list
 #include<bits/stdc++.h>
+#define width 10
 using namespace std;
-#define width 5
+
 struct Node{
 	int data;
 	struct Node *left;
