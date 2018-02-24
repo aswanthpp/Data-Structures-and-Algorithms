@@ -1,20 +1,66 @@
 #include<bits/stdc++.h>
 #include<stdio.h>
 #include<stdlib.h>
+#define width 5
 using namespace std;
-struct node
+struct Node
 {       int data;
-        struct node *left,*right;
+        struct Node *left,*right;
+        int height;
 };
-struct node *root=NULL,*root1=NULL;
-struct node * remove(struct node *p,int data);
-struct node * minValueNode(struct node* node);
-void insert(struct node *p,int data)
+	
+struct Node *root=NULL;
+int max(int a,int b){
+	if(a>b)
+		return a;
+	else 
+		return b;
+}
+int getHeight(struct Node *p){
+	if(p=NULL){
+		return 0;
+	}
+	return p->height;
+}
+int checkBalance(struct Node *p){
+	if(p==NULL){
+		return 0;
+	}
+	return (getHeight(p->right) - getHeight(p->left));
+}	
+void leftRotate(struct Node *x){
+	struct Node *y = x->right;
+    struct Node *T2 = y->left;
+ 
+    // Perform rotation
+    y->left = x;
+    x->right = T2;
+ 
+    //  Update heights
+    x->height = max(getHeight(x->left), getHeight(x->right))+1;
+    y->height = max(getHeight(y->left), getHeight(y->right))+1;
+ 
+}
+void rightRotate(struct Node *y){
+	struct Node *x = y->left;
+    struct Node *T2 = x->right;
+ 
+    // Perform rotation
+    x->right = y;
+    y->left = T2;
+ 
+    // Update heights
+    y->height = max(getHeight(y->left), getHeight(y->right))+1;
+    x->height = max(getHeight(x->left), getHeight(x->right))+1;
+ 
 
+
+}
+void insert(struct Node *p,int data)
 {
         if(data<=p->data)
         {       if(p->left==NULL)
-                {struct node *p1=(struct node *)malloc(sizeof(struct node ));
+                {struct Node *p1=(struct Node *)malloc(sizeof(struct Node ));
                         p1->data=data;
                         p1->right=NULL;
                         p1->left=NULL;
@@ -27,7 +73,7 @@ void insert(struct node *p,int data)
         else
 
         {       if(p->right==NULL)
-                {      struct node *p1=(struct node *)malloc(sizeof(struct node ));
+                {      struct Node *p1=(struct Node *)malloc(sizeof(struct Node ));
                         p1->data=data;
                         p1->right=NULL;
                         p1->left=NULL;
@@ -37,100 +83,61 @@ void insert(struct node *p,int data)
                 {       insert(p->right,data);
                 }
         }
-                                                                                                                              
-}
-void preorder(struct node *p)
-{       if(p!=NULL)
-        {       printf("%d ",p->data);
-                preorder(p->left);
-                preorder(p->right);
+        p->height=1+max(getHeight(p->left),getHeight(p->right));
+        if(checkBalance(p)>1 && data < p->left->data){
+        	rightRotate(p);
+        
         }
-}
-void postorder(struct node *p)
-{       if(p!=NULL)
-        {       postorder(p->left);
-                postorder(p->right);
-                printf("%d ",p->data);
+        else if(checkBalance(p)<-1 && data > p->right->data){
+        	leftRotate(p);
         }
-}
-void inorder(struct node *p)
-{       if(p!=NULL)
-        {       inorder(p->left);
-                printf("%d ",p->data);
-                inorder(p->right);
+        else if(checkBalance(p)>1 && data > p->left->data){
+        	leftRotate(p->left);
+        	rightRotate(p);
         }
+        else if(checkBalance(p)<-1 && data < p->right->data){
+        	rightRotate(p->right);
+        	leftRotate(p);
+        }
+                                                                                                                          
+}
+void display(struct Node *Node,int space){
+	if(Node==NULL){
+		return ;
+	}
+	space+=width;
+	display(Node->right,space);
+	cout<<endl;
+	for(int i=width;i<space;i++){
+		cout<<" ";
+	}
+	cout<<Node->data<<"\n";
+	display(Node->left,space);
 }
 main()
 {       int n,data,f=0;
         printf("\nEnter Root Value:");
         scanf("%d",&data);
-        struct node *p=(struct node *)malloc(sizeof(struct node ));
+        struct Node *p=(struct Node *)malloc(sizeof(struct Node ));
         p->data=data;
         p->left=NULL;
         p->right=NULL;
+        p->height=0;
         root=p;
-        printf("\n1.insert New Data\n2.Pre Order Display\n3.Post Order Display\n4.Inorder Display\n5.Delete\n6.Exit");
+        printf("\n1.Insert\n2.Display\n3.Exit");
         do
         {               printf("\n\tEnter Option:");
                         scanf("%d",&n);
                         switch(n)
                         {       case 1: printf("\nEnter Data:");
                                         scanf("%d",&data);
-                                                                                                                            
-                         insert(root,data);
+                                                                                                                  
+          		               insert(root,data);
                                         break;
-                                case 2:preorder(root);break;
-                                case 3:postorder(root);break;
-                                case 4:inorder(root);break;
-                                case 5:printf("\nEnter value to be deleted:");
-                                        scanf("%d",&data);
-                                        root=remove(root,data);
-                                        break;
-                                case 6: exit(0);
+                                case 2:display(root,0);break;
+                                case 3: exit(0);
 
                         }
         }while(1);
 }
-struct node * remove(struct node *p,int data)
-{
-        if(p==NULL)
-        {       printf("\nNothing to remove");
-                return NULL;
-        }
-        if(data<p->data)
-                p->left=remove(p->left,data);
-        else if(data>=p->data)
-                p->right=remove(p->right,data);
-        else
-        {       if(root->left==NULL)
-                {       struct node *temp=root->right;
-                        free(root);
-                        return temp;
-                }
-                else if(root->right==NULL)
-                {       struct node *temp=root->left;
-                        free(root);
-                        return temp;
-                }
-                 struct node* temp = minValueNode(root->right);
-                  root->data = temp->data;
-
-                root->right = remove(root->right, temp->data);
-
-                                                                                                                           
-          }
-
-               return root;
-}
-struct node * minValueNode(struct node* node)
-{
-    struct node* current = node;
-
-    /* loop down to find the leftmost leaf */
-    while (current->left != NULL)
-        current = current->left;
-
-    return current;
-}
-                                                                                                                             
 
