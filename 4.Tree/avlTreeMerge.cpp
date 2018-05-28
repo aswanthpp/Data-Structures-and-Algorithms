@@ -1,4 +1,4 @@
-#include<stdio.h>
+	#include<stdio.h>
 #include<stdlib.h>
 #define width 5
 struct Node
