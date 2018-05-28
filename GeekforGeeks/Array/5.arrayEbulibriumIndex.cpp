@@ -19,13 +19,26 @@ int main()
 		    int x;
 		    cin>>x;
 		    a.push_back(x);
-		    s+=a;
+		    s+=x;
 		    
 		}
+		//cout<<"\nSum "<<s;
+		int lsum=0;
+		int f=0;
+		//cout<<"Total Sum "<<s<<"\n";
 	    for(int j=0;j<n;j++){
-	     for(int k=0;k<=j;k++){
+	     s -=a[j];
+	     if(lsum==s){
+	         cout<<j+1<<"\n";
+	         f=1;
+	         break;
 	         
-	     }   
+	     }
+	     lsum +=a[j];
+	    // cout<<"\nSum "<<s<<" lsum "<<lsum<<"\n";
+	    }
+	    if(f==0){
+	        cout<<"-1\n";
 	    }
 	}
 	return 0;
