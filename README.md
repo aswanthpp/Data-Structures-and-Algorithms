@@ -1,5 +1,5 @@
 # DataStructuresAndAlgorithms
 
-## Repository to keep track important data structure funciton and algorithms
+## Repository to keep track of basic data structure implementations and basic algorithmic principles
 
 
